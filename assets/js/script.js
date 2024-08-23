@@ -2,9 +2,10 @@ const nameInput = $('#task-name');
 const dueInput = $('#task-due');
 const descInput = $('#task-description');
 const taskForm = $('#modal-form');
+const taskArea = $('#task-area');
 // Retrieve tasks and nextId from localStorage
 // let nextId = JSON.parse(localStorage.getItem("nextId"));
-let taskList = JSON.parse(localStorage.getItem("tasks"));
+let taskList = JSON.parse(localStorage.getItem('tasks')) || [];
 
 // // Todo: create a function to generate a unique task id
 // function generateTaskId() {
@@ -82,14 +83,14 @@ function handleAddTask(event) {
     event.preventDefault();
     // generateTaskId();
 
-    const name = nameInput.val().trim();
-    const due = dueInput.val();
-    const desc = descInput.val();
+    // const name = nameInput.val().trim();
+    // const due = dueInput.val();
+    // const desc = descInput.val();
     const newTask = {
-        name: name,
-        // id: nextId,
-        dueDate: due,
-        text: desc,
+        name: nameInput.val().trim(),
+        id: Math.floor(Math.random() * 1000),
+        dueDate: dueInput.val(),
+        text: descInput.val(),
         status: 'to-do',
     };
 
@@ -105,14 +106,19 @@ function handleAddTask(event) {
 
 // Todo: create a function to handle deleting a task
 function handleDeleteTask(event) {
-    const taskId = $(this).attr('data-task-id');
-    event.preventDefault();
-    taskList.forEach(task => {
-        if (task.id === taskId) {
-            taskList.splice(taskList.indexOf(task), 1);
-        }
-    });
-    localStorage.setItem('tasks', taskList);
+    // const taskId = $(this).attr('data-task-id');
+    // event.preventDefault();
+    // taskList.forEach(task => {
+    //     if (task.id === taskId) {
+    //         taskList.splice(taskList.indexOf(task), 1);
+    //     }
+    // });
+    // const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+    const id = event.target.parentElement.parentElement.getAttribute('data-task-id');
+    console.log(id);
+    const filteredTasks = taskList.filter((task) => task.id !== id);
+    console.log(filteredTasks);
+    localStorage.setItem('tasks', JSON.stringify(filteredTasks));
     renderTaskList();
 }
 
@@ -122,6 +128,7 @@ function handleDrop(event, ui) {
 }
 
 taskForm.on('submit', handleAddTask)
+// taskArea.on('click', '.btn-delete-project', handleDeleteProject);
 
 // Todo: when the page loads, render the task list, add event listeners, make lanes droppable, and make the due date field a date picker
 $(document).ready(function () {
