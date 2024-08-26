@@ -43,12 +43,18 @@ function createTaskCard(task) {
 
 // Todo: create a function to render the task list and make cards draggable
 function renderTaskList() {
-    const todo = $('#to-do');
-    const inProgress = $('#in-progress');
-    const done = $('#done');
+    const todo = $('#todo-cards');
+    const inProgress = $('#in-progress-cards');
+    const done = $('#done-cards');
     todo.empty();
     inProgress.empty();
     done.empty();
+    // const todoH2 = $('<h2>').addClass('card-title mb-1').text('To Do');
+    // const inProgressH2 = $('<h2>').addClass('card-title mb-1').text('In Progress');
+    // const doneH2 = $('<h2>').addClass('card-title mb-1').text('Done');
+    // todo.append(todoH2);
+    // inProgress.append(inProgressH2);
+    // doneH2.append(doneH2);
 
     for (let task of taskList) {
         if (task.status === 'to-do') {
@@ -59,23 +65,24 @@ function renderTaskList() {
             done.append(createTaskCard(task));
         }
     }
-
-    // ? Use JQuery UI to make task cards draggable
-    $('.draggable').draggable({
-        opacity: 0.7,
-        zIndex: 100,
-        // ? This is the function that creates the clone of the card that is dragged. This is purely visual and does not affect the data.
-        helper: function (e) {
-            // ? Check if the target of the drag event is the card itself or a child element. If it is the card itself, clone it, otherwise find the parent card  that is draggable and clone that.
-            const original = $(e.target).hasClass('ui-draggable')
-                ? $(e.target)
-                : $(e.target).closest('.ui-draggable');
-            // ? Return the clone with the width set to the width of the original card. This is so the clone does not take up the entire width of the lane. This is to also fix a visual bug where the card shrinks as it's dragged to the right.
-            return original.clone().css({
-                width: original.outerWidth(),
-            });
-        },
-    });
+console.log(taskList)
+    // // ? Use JQuery UI to make task cards draggable
+    // $('.draggable').draggable({
+    //     opacity: 0.7,
+    //     zIndex: 100,
+    //     // ? This is the function that creates the clone of the card that is dragged. This is purely visual and does not affect the data.
+    //     helper: function (e) {
+    //         // ? Check if the target of the drag event is the card itself or a child element. If it is the card itself, clone it, otherwise find the parent card  that is draggable and clone that.
+    //         const original = $(e.target).hasClass('ui-draggable')
+    //             ? $(e.target)
+    //             : $(e.target).closest('.ui-draggable');
+    //         // ? Return the clone with the width set to the width of the original card. This is so the clone does not take up the entire width of the lane. This is to also fix a visual bug where the card shrinks as it's dragged to the right.
+    //         return original.clone().css({
+    //             width: original.outerWidth(),
+    //         });
+    //     },
+    // });
+    // location.reload();
 }
 
 // Todo: create a function to handle adding a new task
@@ -88,7 +95,7 @@ function handleAddTask(event) {
     // const desc = descInput.val();
     const newTask = {
         name: nameInput.val().trim(),
-        id: Math.floor(Math.random() * 1000),
+        id: parseInt(Math.floor(Math.random() * 1000)),
         dueDate: dueInput.val(),
         text: descInput.val(),
         status: 'to-do',
@@ -116,10 +123,12 @@ function handleDeleteTask(event) {
     // const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
     const id = event.target.parentElement.parentElement.getAttribute('data-task-id');
     console.log(id);
-    const filteredTasks = taskList.filter((task) => task.id !== id);
+    console.log(taskList);
+    const filteredTasks = taskList.filter((task) => task.id != id);
     console.log(filteredTasks);
     localStorage.setItem('tasks', JSON.stringify(filteredTasks));
-    renderTaskList();
+    location.reload();
+    loadTasks();
 }
 
 // Todo: create a function to handle dropping a task into a new status lane
@@ -138,5 +147,6 @@ const loadTasks = function () {
     if (!taskList) {
         taskList = [];
     }
+    renderTaskList();
 }
 loadTasks();
